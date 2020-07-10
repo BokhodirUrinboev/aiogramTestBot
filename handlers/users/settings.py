@@ -33,21 +33,39 @@ async def show_language(message: Message):
 @dp.message_handler(Text(equals=["🇷🇺 Русский","🇺🇿 O'zbek"]), state=Settings.Settings_change_lang)
 async def change_language(message: Message, state: FSMContext):
     user_id = message.from_user.id
+    user = await db.get_user(user_id)
     await state.reset_state()
+
     if message.text == "🇷🇺 Русский":
-        LANG_STORAGE[user_id] = 'ru'
-        await db.set_language('ru')
-        if await db.check_attachment(user_id):
-            await message.answer("👇 Выберите действие:", reply_markup=menu_reg_ru_button)
+        if user is not None:
+            LANG_STORAGE[user_id] = 'ru'
+            if await db.check_attachment(user_id):
+                await message.answer("👇 Выберите действие:", reply_markup=menu_reg_ru_button)
+            else:
+                await message.answer("👇 Выберите действие:", reply_markup=menu_ru_button)
         else:
-            await message.answer("👇 Выберите действие:", reply_markup=menu_ru_button)
+            user = await db.add_new_user()
+            LANG_STORAGE[user_id] = 'uz'
+            await db.set_language('ru')
+            if await db.check_attachment(user_id):
+                await message.answer("👇 Выберите действие:", reply_markup=menu_reg_ru_button)
+            else:
+                await message.answer("👇 Выберите действие:", reply_markup=menu_ru_button)
     elif message.text == "🇺🇿 O'zbek":
-        LANG_STORAGE[user_id] = 'uz'
-        await db.set_language('uz')
-        if await db.check_attachment(user_id):
-            await message.answer("👇 Выберите действие:", reply_markup=menu_reg_uz_button)
+        if user is not None:
+            LANG_STORAGE[user_id] = 'uz'
+            if await db.check_attachment(user_id):
+                await message.answer("👇 Выберите действие:", reply_markup=menu_reg_uz_button)
+            else:
+                await message.answer("👇 Xizmat turini tanlang:", reply_markup=menu_uz_button)
         else:
-            await message.answer("👇 Xizmat turini tanlang:", reply_markup=menu_uz_button)
+            user = await db.add_new_user()
+            LANG_STORAGE[user_id] = 'uz'
+            await db.set_language('uz')
+            if await db.check_attachment(user_id):
+                await message.answer("👇 Выберите действие:", reply_markup=menu_reg_uz_button)
+            else:
+                await message.answer("👇 Xizmat turini tanlang:", reply_markup=menu_uz_button)
 
 
 @dp.message_handler(Text(equals=["⬅️ Ortga", "⬅️ Назад"]), state=Settings.Settings_change_lang)

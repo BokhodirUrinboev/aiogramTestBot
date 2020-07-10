@@ -11,9 +11,10 @@ db = database.DBCommands()
 
 
 @dp.message_handler(CommandStart())
-async def bot_start(message: types.Message):
+async def bot_start(message: types.Message, state:FSMContext):
     user_id = message.from_user.id
     user = await db.get_user(user_id)
+    await state.reset_state()
     if user is not None:
         if user.language == 'ru':
             LANG_STORAGE[user_id] = 'ru'
@@ -46,3 +47,13 @@ async def back(message: Message, state: FSMContext):
             await message.answer("👇 Выберите действие:", reply_markup=menu_reg_uz_button)
         else:
             await message.answer("👇 Xizmat turini tanlang:", reply_markup=menu_uz_button)
+
+
+@dp.message_handler(commands=['stop'], state='*')
+async def stop(message: types.Message, state:FSMContext):
+    await state.reset_state()
+    user_id = message.from_user.id
+    try:
+        del LANG_STORAGE[user_id]
+    except KeyError:
+        pass
