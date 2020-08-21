@@ -38,6 +38,7 @@ async def change_language(message: Message, state: FSMContext):
 
     if message.text == "🇷🇺 Русский":
         if user is not None:
+            await db.set_language('ru')
             LANG_STORAGE[user_id] = 'ru'
             if await db.check_attachment(user_id):
                 await message.answer("👇 Выберите действие:", reply_markup=menu_reg_ru_button)
@@ -45,7 +46,7 @@ async def change_language(message: Message, state: FSMContext):
                 await message.answer("👇 Выберите действие:", reply_markup=menu_ru_button)
         else:
             user = await db.add_new_user()
-            LANG_STORAGE[user_id] = 'uz'
+            LANG_STORAGE[user_id] = 'ru'
             await db.set_language('ru')
             if await db.check_attachment(user_id):
                 await message.answer("👇 Выберите действие:", reply_markup=menu_reg_ru_button)
@@ -53,6 +54,7 @@ async def change_language(message: Message, state: FSMContext):
                 await message.answer("👇 Выберите действие:", reply_markup=menu_ru_button)
     elif message.text == "🇺🇿 O'zbek":
         if user is not None:
+            await db.set_language('uz')
             LANG_STORAGE[user_id] = 'uz'
             if await db.check_attachment(user_id):
                 await message.answer("👇 Выберите действие:", reply_markup=menu_reg_uz_button)
