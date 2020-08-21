@@ -21,3 +21,7 @@
 8. run the app.py file in order to run telegram bot
 	python app.py
 ```
+
+
+## Simulation
+![telegrambot](https://user-images.githubusercontent.com/40819423/90924374-bf628e80-e408-11ea-8e45-90e5ee891e5b.gif)
